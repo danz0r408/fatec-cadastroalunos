@@ -1,0 +1,15 @@
+# Python / Django
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# Segredos e variaveis de ambiente
+.env
+.env.*
+*.pem
+*.key
+
+# Sistema / editor
+.DS_Store
+Thumbs.db

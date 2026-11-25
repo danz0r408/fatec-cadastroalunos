@@ -1,0 +1,151 @@
+CADASTRO DE ALUNOS - API Django + App Expo
+==========================================
+
+Estrutura do repositório
+------------------------
+  api\   -> API REST em Django (lista, cadastra, edita e apaga alunos)
+  app\   -> Aplicativo mobile em Expo (abre no celular pelo Expo Go)
+
+A API roda no computador. O app roda no celular e busca os alunos na API
+pela rede Wi-Fi. Por isso os dois precisam estar na MESMA rede.
+
+
+PRÉ-REQUISITOS (uma vez só, em cada computador)
+-----------------------------------------------
+  - Python 3.12 ou mais novo     -> python --version
+  - Node.js 20 ou mais novo      -> node --version
+  - Git                          -> git --version
+  - VS Code
+  - No celular: app "Expo Go" (Play Store / App Store), sempre atualizado
+
+
+1) BAIXAR O PROJETO (só se for um computador novo)
+--------------------------------------------------
+  git clone https://github.com/danz0r408/fatec-cadastroalunos.git
+  cd fatec-cadastroalunos
+
+Se o projeto já estiver no seu notebook, pule para o passo 2.
+
+
+2) PREPARAR A API (só na primeira vez em cada computador)
+---------------------------------------------------------
+No VS Code: File > Open Folder > pasta "api". Depois Terminal > New Terminal.
+
+  python -m venv venv
+  venv\Scripts\activate
+  pip install -r requirements.txt
+  python manage.py migrate
+  python manage.py loaddata alunos_iniciais
+  python manage.py createsuperuser
+
+  - "loaddata alunos_iniciais" cadastra os 4 alunos de exemplo
+    (João Silva, Maria Souza, Carlos Lima, Ana Costa).
+  - "createsuperuser" cria o login do painel /admin. Escolha usuário e senha.
+
+Se o PowerShell bloquear o "activate" (erro de "execução de scripts"):
+  Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+e tente de novo.
+
+
+3) PREPARAR O APP (só na primeira vez em cada computador)
+---------------------------------------------------------
+Abra OUTRA janela do VS Code: File > New Window > Open Folder > pasta "app".
+Terminal > New Terminal:
+
+  npm install
+
+
+4) RODAR NO DIA A DIA
+---------------------
+
+Janela da API (pasta api):
+  venv\Scripts\activate
+  python manage.py runserver 0.0.0.0:8000
+
+  IMPORTANTE: use "0.0.0.0:8000". Só "runserver" não aceita o celular.
+
+Janela do app (pasta app):
+  npx expo start
+
+  Abra o Expo Go no celular e leia o QR Code que aparece no terminal.
+
+Para parar qualquer um dos dois: clique no terminal e aperte CTRL + C.
+
+
+5) DESCOBRIR O ENDEREÇO DA API (toda vez que mudar de rede)
+-----------------------------------------------------------
+No terminal:
+  ipconfig
+
+Procure o bloco "Adaptador de Rede sem Fio Wi-Fi" (ou "Ethernet", se estiver
+no cabo) e anote o "Endereço IPv4". Exemplo: 10.20.35.142
+
+Teste no NAVEGADOR DO CELULAR:
+  http://10.20.35.142:8000/alunos/
+
+Se aparecer a lista de alunos em JSON, a rede está funcionando.
+Esse mesmo endereço é o que o app vai usar (veja "O que falta", item 1).
+
+Endereços úteis no computador:
+  http://127.0.0.1:8000/alunos/   -> API (JSON)
+  http://127.0.0.1:8000/admin/    -> painel para cadastrar alunos
+
+
+O QUE FALTA PARA RODAR NA SALA DE AULA
+======================================
+
+[ ] 1. Criar a tela "Cadastro de Alunos" no app
+       Hoje o app\App.js ainda é a tela padrão do Expo. Falta trocar pela tela
+       que busca os nomes na API. Ela vai ter, no topo, uma linha assim:
+
+         const API_URL = 'http://SEU_IP_AQUI:8000/alunos/';
+
+       Na faculdade, troque SEU_IP_AQUI pelo IP que o "ipconfig" mostrar lá.
+       É a ÚNICA coisa que muda de rede para rede. A API (Django) não muda nada.
+
+[ ] 2. Criar o superusuário (passo 2) no computador que vai usar na aula.
+       O usuário admin não vai para o GitHub, cada computador tem o seu.
+
+[ ] 3. Instalar/atualizar o Expo Go no celular ANTES da aula
+       (o projeto usa o Expo SDK 58; Expo Go desatualizado dá erro de versão).
+
+[ ] 4. Rodar "npm install" e "pip install" em casa, se possível.
+       Baixar tudo na Wi-Fi da faculdade com a turma inteira pode demorar muito.
+
+[ ] 5. Na sala: computador e celular no MESMO Wi-Fi, e testar o endereço da
+       API no navegador do celular (passo 5) antes de abrir o app.
+
+
+SE NÃO FUNCIONAR NA FACULDADE
+=============================
+
+O navegador do celular não abre http://IP:8000/alunos/
+  -> Muitas redes de faculdade bloqueiam um aparelho de falar com o outro.
+     Solução: ligue o "Roteador Wi-Fi / Hotspot" do celular, conecte o
+     COMPUTADOR nele, rode "ipconfig" de novo e use o IP novo no app.
+
+O Expo Go não abre o QR Code / fica carregando para sempre
+  -> Mesmo motivo acima. Use o hotspot, ou rode:
+       npx expo start --tunnel
+
+Aparece aviso do Firewall do Windows ao rodar o servidor
+  -> Clique em "Permitir acesso".
+
+Erro "DisallowedHost"
+  -> Não deve acontecer (ALLOWED_HOSTS já aceita qualquer IP). Se acontecer,
+     confira se está rodando o projeto desta pasta.
+
+Erro "no such table: alunos_aluno" ou "file is not a database"
+  -> Apague o arquivo api\db.sqlite3 e rode de novo:
+       python manage.py migrate
+       python manage.py loaddata alunos_iniciais
+       python manage.py createsuperuser
+
+Erro "Address already in use" / porta ocupada
+  -> Já tem um servidor rodando em outro terminal. Feche-o com CTRL + C.
+
+
+OBSERVAÇÃO DE SEGURANÇA
+-----------------------
+Esta configuração é só para aula/desenvolvimento: DEBUG ligado, qualquer IP
+aceito e API sem login. Não publique assim na internet.

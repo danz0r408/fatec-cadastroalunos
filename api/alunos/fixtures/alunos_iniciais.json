@@ -1,0 +1,34 @@
+[
+{
+  "model": "alunos.aluno",
+  "pk": 1,
+  "fields": {
+    "nome": "Maria Souza",
+    "curso": "DSM"
+  }
+},
+{
+  "model": "alunos.aluno",
+  "pk": 2,
+  "fields": {
+    "nome": "Carlos Lima",
+    "curso": "GTI"
+  }
+},
+{
+  "model": "alunos.aluno",
+  "pk": 3,
+  "fields": {
+    "nome": "Ana Costa",
+    "curso": "SI"
+  }
+},
+{
+  "model": "alunos.aluno",
+  "pk": 4,
+  "fields": {
+    "nome": "João Silva",
+    "curso": "ADS"
+  }
+}
+]
