@@ -13,3 +13,6 @@ db.sqlite3
 # Sistema / editor
 .DS_Store
 Thumbs.db
+
+# Guia local (nao versionar)
+COMO_RODAR.txt
